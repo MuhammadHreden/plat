@@ -32,22 +32,43 @@ def start():
         time.sleep(2)
 
 
-if __name__ == '__main__':
-    driver = webdriver.Edge(executable_path="msedgedriver")
-    url = ('https://www.gateway2jordan.gov.jo/transitJO/')
-    #while(datetime.datetime.now().minute < 15 ):
-    for i in range(4):
-        driver.get(url)
-        driver.find_element(By.NAME, "txtName").send_keys('jhbksj')
-        driver.find_element(By.XPATH, '/html/body/form/section/div/div/div[3]/div[1]/div[4]/div[2]/div[1]/label' ).click()
-        driver.find_element(By.XPATH, '/html/body/form/section/div/div/div[3]/div[1]/div[5]/div[2]/select/option[8]' ).click()
-        driver.find_element(By.XPATH, '/html/body/form/section/div/div/div[3]/div[1]/div[19]/div/label' ).click()
-        driver.find_element(By.NAME,'FileUpload1').send_keys(r'C:\Users\Muhammad\Desktop\pythonProject\muh.jpg')
-        driver.execute_script("window.open();")
-        driver.switch_to.window(driver.window_handles[i+1])
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+import time
 
-    time.sleep(5)
+def createDriver() -> webdriver.Chrome:
+    chrome_options = webdriver.ChromeOptions()
+    #chrome_options.binary_location = os.environb.get("GOOGLE_CHROME_BIN")
+    chrome_options.add_argument("--headless=new")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    #chrome_options.add_argument('--window-size=1920,1080')
+    #myDriver = webdriver.Chrome(executable_path=os.environb.get("CHROMEDRIVER_PATH") , chrome_options= chrome_options)
+    prefs = {"profile.managed_default_content_settings.images": 2}
+    #chrome_options.headless = True
+
+    chrome_options.add_experimental_option("prefs", prefs)
+    myDriver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+
+    return myDriver
+
+
+if __name__ == '__main__':
+    driver = createDriver()
+    url = ('https://www.gateway2jordan.gov.jo/transitJO/')
+    driver.get(url)
+    driver.find_element(By.NAME, "txtName").send_keys('jhbksj')
+
+    driver.find_element(By.XPATH, '/html/body/form/section/div/div/div[3]/div[1]/div[4]/div[2]/div[1]/label' ).click()
+    driver.find_element(By.XPATH, '/html/body/form/section/div/div/div[3]/div[1]/div[5]/div[2]/select/option[8]' ).click()
+    driver.find_element(By.XPATH, '/html/body/form/section/div/div/div[3]/div[1]/div[19]/div/label' ).click()
+    driver.find_element(By.NAME,'FileUpload1').send_keys(r'C:\Users\Muhammad\Desktop\pythonProject\muh.jpg')
+
+    time.sleep(20)
     driver.quit()
+
 
 
 
